@@ -1,0 +1,1013 @@
+{
+  "schemaVersion": 1,
+  "model": {
+    "name": "OCBC ONE Deep State Engine",
+    "method": "6-8-2-8-6 tanh autoencoder + K-means",
+    "purpose": "Identify a planning state; never authorise a transaction",
+    "seed": 42,
+    "syntheticTrainingSnapshots": 720,
+    "reconstructionMSE": 0.36873,
+    "silhouetteScore": 0.6037
+  },
+  "features": [
+    {
+      "key": "monthly_income",
+      "label": "Monthly income",
+      "format": "currency"
+    },
+    {
+      "key": "buffer_months",
+      "label": "Emergency buffer",
+      "format": "months"
+    },
+    {
+      "key": "debt_ratio",
+      "label": "Debt-to-income",
+      "format": "percent"
+    },
+    {
+      "key": "protection_gap",
+      "label": "Protection-gap signal",
+      "format": "score"
+    },
+    {
+      "key": "investable_surplus",
+      "label": "Investable surplus",
+      "format": "currency"
+    },
+    {
+      "key": "goal_progress",
+      "label": "First-home progress",
+      "format": "percent"
+    }
+  ],
+  "scaler": {
+    "mean": [
+      4386.69465617,
+      2.13068691,
+      0.18027529,
+      0.53303452,
+      997.79641248,
+      0.21915856
+    ],
+    "scale": [
+      1329.25207778,
+      1.44600312,
+      0.09937364,
+      0.61490548,
+      578.30251779,
+      0.16018305
+    ]
+  },
+  "encoder": {
+    "activation": "tanh",
+    "layers": [
+      {
+        "weights": [
+          [
+            -0.18841703,
+            0.13709418,
+            -0.12116758,
+            0.02896484,
+            -0.08459095,
+            -0.17130913,
+            0.07322605,
+            0.05893724
+          ],
+          [
+            0.08498033,
+            0.87473498,
+            -1.03538366,
+            0.59516547,
+            0.17636484,
+            -0.14066953,
+            -0.01945599,
+            -0.71874383
+          ],
+          [
+            0.0383656,
+            -0.34838398,
+            0.30366558,
+            -0.05236373,
+            -0.04822071,
+            -0.02833282,
+            -0.33476447,
+            -0.42060626
+          ],
+          [
+            0.22400568,
+            0.62156865,
+            -0.26750445,
+            0.76056032,
+            -0.35323236,
+            -0.18610646,
+            0.11022863,
+            0.87559209
+          ],
+          [
+            -0.07801305,
+            0.20969418,
+            -0.19151859,
+            0.07922989,
+            -0.04206684,
+            -0.1047376,
+            -0.1013951,
+            -0.33335941
+          ],
+          [
+            -0.11908702,
+            0.32539133,
+            -0.27208401,
+            0.29574761,
+            -0.00704783,
+            -0.11710919,
+            -0.00620995,
+            -0.13743986
+          ]
+        ],
+        "biases": [
+          0.61308319,
+          -0.47389654,
+          -0.04586537,
+          1.32888654,
+          0.52821307,
+          0.53779954,
+          0.7341896,
+          1.84355909
+        ]
+      },
+      {
+        "weights": [
+          [
+            -0.80562452,
+            -0.42624268
+          ],
+          [
+            -0.2793945,
+            -0.34825667
+          ],
+          [
+            -0.1902193,
+            -0.46572354
+          ],
+          [
+            1.08786375,
+            0.08441926
+          ],
+          [
+            -0.36499267,
+            -0.10735712
+          ],
+          [
+            -0.6565006,
+            0.54253163
+          ],
+          [
+            0.14129215,
+            1.13156775
+          ],
+          [
+            -0.02196533,
+            -1.4638451
+          ]
+        ],
+        "biases": [
+          -0.2152001,
+          0.45061364
+        ]
+      }
+    ]
+  },
+  "clusters": [
+    {
+      "id": "buffer-building",
+      "rawCluster": 0,
+      "label": "Buffer Building",
+      "short": "Build liquidity before adding risk",
+      "description": "Income is active, but emergency savings are still below the planning threshold.",
+      "color": "#b56b2e",
+      "centroid": [
+        -0.78456474,
+        -0.22863388
+      ],
+      "trainingMembers": 246
+    },
+    {
+      "id": "protection-gap",
+      "rawCluster": 2,
+      "label": "Protection Gap",
+      "short": "Review a dated uncovered risk",
+      "description": "A meaningful protection need appears in the consented financial snapshot.",
+      "color": "#b32331",
+      "centroid": [
+        0.20729213,
+        -0.32616031
+      ],
+      "trainingMembers": 236
+    },
+    {
+      "id": "growth-ready",
+      "rawCluster": 1,
+      "label": "Growth Ready",
+      "short": "Ready for a suitability review",
+      "description": "The cash buffer is established and recurring surplus can enter planning review.",
+      "color": "#34765c",
+      "centroid": [
+        0.1549432,
+        0.70473728
+      ],
+      "trainingMembers": 238
+    }
+  ],
+  "plot": {
+    "bounds": {
+      "xMin": -1.117714,
+      "xMax": 0.9583,
+      "yMin": -1.02958,
+      "yMax": 1.125187
+    },
+    "samples": [
+      {
+        "x": 0.429756,
+        "y": 0.363109,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.735486,
+        "y": -0.383358,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.164353,
+        "y": -0.219204,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.298735,
+        "y": -0.252594,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.050466,
+        "y": 0.090104,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.850782,
+        "y": -0.328844,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.057633,
+        "y": 0.665595,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.624608,
+        "y": -0.135925,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.82768,
+        "y": -0.374048,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.028605,
+        "y": -0.523808,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.963373,
+        "y": -0.749685,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.053757,
+        "y": 0.92462,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.450599,
+        "y": 0.845271,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.562749,
+        "y": -0.705047,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.927357,
+        "y": -0.367129,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.185818,
+        "y": 0.747027,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.084065,
+        "y": -0.141844,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.808056,
+        "y": -0.142763,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.862774,
+        "y": 0.051263,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.112302,
+        "y": -0.431076,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.615006,
+        "y": -0.20749,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.617509,
+        "y": 0.951897,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.235558,
+        "y": 0.965951,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.454946,
+        "y": 0.059311,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.11923,
+        "y": -0.259353,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.828635,
+        "y": 0.05484,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.504963,
+        "y": -0.112215,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.552648,
+        "y": 0.226311,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.829745,
+        "y": -0.169261,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.282213,
+        "y": -0.30895,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.336678,
+        "y": -0.257973,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.034835,
+        "y": -0.193327,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.665177,
+        "y": 0.870837,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.18775,
+        "y": 0.923781,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.107892,
+        "y": -0.473829,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.779174,
+        "y": -0.292511,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.166137,
+        "y": 0.658797,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.20516,
+        "y": 0.710645,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.207063,
+        "y": -0.510942,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.905704,
+        "y": -0.407053,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.108394,
+        "y": -0.275482,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.67707,
+        "y": -0.846331,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.096379,
+        "y": 0.690588,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.92734,
+        "y": -0.385124,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.055764,
+        "y": 0.759446,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.446171,
+        "y": -0.49162,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.162371,
+        "y": 0.506389,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.828002,
+        "y": -0.314079,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.269172,
+        "y": -0.417735,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.21882,
+        "y": -0.364327,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.144757,
+        "y": -0.219064,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.217235,
+        "y": 0.462467,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.58978,
+        "y": 0.232121,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.230833,
+        "y": 0.88472,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.650145,
+        "y": -0.012352,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.155727,
+        "y": -0.158896,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.57327,
+        "y": -0.462515,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.141208,
+        "y": 0.920006,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.420505,
+        "y": 0.90121,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.104667,
+        "y": 0.841877,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.729068,
+        "y": 0.11183,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.28616,
+        "y": -0.334574,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.044425,
+        "y": 0.590199,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.5598,
+        "y": 0.345447,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.849747,
+        "y": -0.553727,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.081379,
+        "y": 0.450967,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.91128,
+        "y": -0.43837,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.069729,
+        "y": 0.482496,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.824932,
+        "y": -0.14386,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.652219,
+        "y": -0.529138,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.613243,
+        "y": -0.26681,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.278069,
+        "y": 0.957001,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.813474,
+        "y": 0.089316,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.914404,
+        "y": -0.367369,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.361491,
+        "y": 0.976583,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.441724,
+        "y": 0.939396,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.891599,
+        "y": -0.653498,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.951768,
+        "y": -0.419855,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.072798,
+        "y": 0.924894,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.657532,
+        "y": 0.057572,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.248093,
+        "y": 0.935067,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.171428,
+        "y": 0.215541,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.133459,
+        "y": -0.325217,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.377231,
+        "y": -0.458117,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.516841,
+        "y": -0.262816,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.548819,
+        "y": -0.302208,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.272543,
+        "y": 0.498251,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.728068,
+        "y": -0.434477,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.193818,
+        "y": -0.005496,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.880325,
+        "y": -0.173618,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.059641,
+        "y": 0.61753,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.254461,
+        "y": -0.451089,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.088889,
+        "y": 0.889868,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.275395,
+        "y": 0.782781,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.466138,
+        "y": 0.79752,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.039806,
+        "y": 0.932428,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.55024,
+        "y": 0.727475,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.633041,
+        "y": -0.237803,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.961072,
+        "y": -0.667641,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.483513,
+        "y": 0.960093,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.262671,
+        "y": 0.524573,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.103333,
+        "y": -0.05514,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.940586,
+        "y": -0.449691,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.612843,
+        "y": -0.557374,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.119275,
+        "y": 0.519071,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.712249,
+        "y": -0.292534,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.065655,
+        "y": -0.116718,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.188306,
+        "y": -0.430613,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.681067,
+        "y": -0.153396,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.076034,
+        "y": -0.491505,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.895496,
+        "y": -0.350597,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.455115,
+        "y": -0.370991,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.18251,
+        "y": 0.498556,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.255529,
+        "y": 0.763718,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.38563,
+        "y": -0.551498,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.096766,
+        "y": 0.795456,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.076019,
+        "y": 0.669874,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.746154,
+        "y": -0.010903,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.787195,
+        "y": -0.191955,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.038308,
+        "y": 0.31237,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.138359,
+        "y": -0.546864,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.132142,
+        "y": -0.467977,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.110241,
+        "y": -0.414847,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.116588,
+        "y": 0.938064,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.022867,
+        "y": -0.372045,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.289721,
+        "y": 0.665642,
+        "state": "growth-ready"
+      },
+      {
+        "x": -0.938308,
+        "y": -0.475491,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.122904,
+        "y": 0.869306,
+        "state": "growth-ready"
+      },
+      {
+        "x": 0.026325,
+        "y": -0.231633,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.831119,
+        "y": -0.126491,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.78424,
+        "y": -0.727989,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.294713,
+        "y": -0.111952,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.864644,
+        "y": -0.54126,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.120028,
+        "y": -0.356947,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.638026,
+        "y": -0.27555,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.846624,
+        "y": -0.050916,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.28913,
+        "y": -0.737696,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.114499,
+        "y": -0.550393,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.921595,
+        "y": -0.090898,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.033765,
+        "y": -0.328892,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.238424,
+        "y": -0.325497,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.83923,
+        "y": -0.129935,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.879758,
+        "y": -0.285026,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.09993,
+        "y": -0.132916,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.729317,
+        "y": -0.374389,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.430057,
+        "y": -0.231404,
+        "state": "protection-gap"
+      },
+      {
+        "x": -0.59399,
+        "y": 0.004472,
+        "state": "buffer-building"
+      },
+      {
+        "x": -0.853983,
+        "y": -0.167753,
+        "state": "buffer-building"
+      },
+      {
+        "x": 0.20143,
+        "y": -0.192553,
+        "state": "protection-gap"
+      },
+      {
+        "x": 0.061293,
+        "y": -0.0182,
+        "state": "protection-gap"
+      }
+    ]
+  },
+  "canonicalJourney": {
+    "first_salary": {
+      "state": "buffer-building",
+      "point": [
+        -0.906964,
+        -0.05158
+      ]
+    },
+    "dubai_uncovered": {
+      "state": "protection-gap",
+      "point": [
+        -0.177995,
+        0.036267
+      ]
+    },
+    "dubai_covered": {
+      "state": "buffer-building",
+      "point": [
+        -0.757016,
+        0.114797
+      ]
+    },
+    "first_home": {
+      "state": "growth-ready",
+      "point": [
+        -0.197061,
+        0.709282
+      ]
+    }
+  },
+  "disclaimer": "Synthetic demonstration data. Cluster state is planning context, not action authority."
+}

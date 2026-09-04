@@ -1,0 +1,13 @@
+{
+  "name": "ocbc-one-prototype",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "ai:train": "python ai/train_deep_kmeans.py",
+    "ai:check": "python -m py_compile ai/train_deep_kmeans.py",
+    "check": "node --check app.js && node --check server.mjs && node --check smoke-test.mjs",
+    "test:demo": "node smoke-test.mjs"
+  }
+}
